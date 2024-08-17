@@ -1,13 +1,68 @@
 <script setup>
+import {reactive} from "vue"
+import {User, Lock} from '@element-plus/icons-vue'
+import router from "@/components/router/index.js";
 
+const form = reactive({
+  username: '',
+  password: '',
+  rememberMe: false,
+})
 </script>
 
 <template>
-  <div>
-    我是登录页面
+  <div class="lp-wrapper">
+    <div style="margin-top: 150px">
+      <div style="font-size: 25px; font-weight: bold">登录</div>
+      <div style="font-size: 14px; color: grey; margin-top: 5px">在进入系统之前，请先输入用户名和密码进行登录</div>
+    </div>
+    <div style="margin-top: 50px">
+      <el-form v-model="form">
+        <el-form-item>
+          <el-input v-model="form.username" maxlength="30" type="text" placeholder="用户名/邮箱">
+            <template #prefix>
+              <el-icon>
+                <User/>
+              </el-icon>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input v-model="form.password" type="password" maxlength="20" style="margin-top: 10px" placeholder="密码">
+            <template #prefix>
+              <el-icon>
+                <Lock/>
+              </el-icon>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-row style="margin-top: 5px">
+          <el-col :span="12" style="text-align: left">
+            <el-form-item prop="remember">
+              <el-checkbox v-model="form.rememberMe" label="记住我"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" style="text-align: right">
+            <el-link @click="router.push('/forget')">忘记密码？</el-link>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
+    <div style="margin-top: 40px">
+      <el-button @click="userLogin()" style="width: 270px" type="success" plain>立即登录</el-button>
+    </div>
+    <el-divider>
+      <span style="color: grey;font-size: 13px">没有账号</span>
+    </el-divider>
+    <div>
+      <el-button style="width: 270px" @click="router.push('/register')" type="warning" plain>注册账号</el-button>
+    </div>
   </div>
 </template>
 
 <style scoped>
-
+.lp-wrapper {
+  text-align: center;
+  margin: 0 20px;
+}
 </style>
