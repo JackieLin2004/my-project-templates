@@ -9,7 +9,7 @@ const formRef = ref()
 const form = reactive({
   username: '',
   password: '',
-  rememberMe: false,
+  remember: false,
 })
 
 const rules = {
@@ -24,7 +24,7 @@ const rules = {
 function userLogin() {
   formRef.value.validate((isValid) => {
     if (isValid) {
-      login(form.username, form.password, form.rememberMe, () => {
+      login(form.username, form.password, form.remember, () => {
       })
     }
   });
@@ -38,7 +38,7 @@ function userLogin() {
       <div style="font-size: 14px; color: grey; margin-top: 5px">在进入系统之前，请先输入用户名和密码进行登录</div>
     </div>
     <div style="margin-top: 50px">
-      <el-form model:="form" :rules="rules" ref="formRef">
+      <el-form :model="form" :rules="rules" ref="formRef">
         <el-form-item prop="username">
           <el-input v-model="form.username" maxlength="30" type="text" placeholder="用户名/邮箱">
             <template #prefix>
@@ -60,7 +60,7 @@ function userLogin() {
         <el-row style="margin-top: 5px">
           <el-col :span="12" style="text-align: left">
             <el-form-item prop="remember">
-              <el-checkbox v-model="form.rememberMe" label="记住我"/>
+              <el-checkbox v-model="form.remember" label="记住我"/>
             </el-form-item>
           </el-col>
           <el-col :span="12" style="text-align: right">
@@ -70,7 +70,7 @@ function userLogin() {
       </el-form>
     </div>
     <div style="margin-top: 40px">
-      <el-button @click="userLogin" style="width: 270px" type="success" plain>立即登录</el-button>
+      <el-button @click="userLogin()" style="width: 270px" type="success" plain>立即登录</el-button>
     </div>
     <el-divider>
       <span style="color: grey;font-size: 13px">没有账号</span>
