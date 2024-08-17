@@ -7,7 +7,6 @@ import com.example.filter.JwtAuthorizeFilter;
 import com.example.service.AccountService;
 import com.example.utils.JwtUtils;
 import jakarta.annotation.Resource;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
@@ -66,23 +65,22 @@ public class SecurityConfiguration {
 
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
+                                        Authentication authentication) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         User user = (User) authentication.getPrincipal();
         Account account = service.findAccountByUsernameOrEmail(user.getUsername());
         String token = utils.createJwt(user, account.getId(), account.getUsername());
-        AuthorizeVO authorizeVO = new AuthorizeVO();
-        authorizeVO.setExpire(utils.expireTime());
-        authorizeVO.setRole(account.getRole());
-        authorizeVO.setToken(token);
-        authorizeVO.setUsername(account.getUsername());
+        AuthorizeVO authorizeVO = account.asViewObject(AuthorizeVO.class, vo -> {
+            vo.setExpire(utils.expireTime());
+            vo.setToken(token);
+        });
         response.getWriter().write(RestBean.success(authorizeVO).asJsonString());
     }
 
     public void onLogoutSuccess(HttpServletRequest request,
                                 HttpServletResponse response,
-                                Authentication authentication) throws IOException, ServletException {
+                                Authentication authentication) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter writer = response.getWriter();
@@ -96,7 +94,7 @@ public class SecurityConfiguration {
 
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response,
-                                        AuthenticationException exception) throws IOException, ServletException {
+                                        AuthenticationException exception) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(RestBean.unauthorized(exception.getMessage()).asJsonString());
@@ -104,7 +102,7 @@ public class SecurityConfiguration {
 
     public void onAccessDeny(HttpServletRequest request,
                              HttpServletResponse response,
-                             AccessDeniedException exception) throws IOException, ServletException {
+                             AccessDeniedException exception) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(RestBean.forbidden(exception.getMessage()).asJsonString());
