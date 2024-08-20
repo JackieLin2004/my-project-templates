@@ -13,7 +13,7 @@ public class RabbitConfiguration {
     @Bean("emailQueue")
     public Queue emailQueue() {
         return QueueBuilder
-                .durable("mail")
+                .durable("email")
                 .build();
     }
 
